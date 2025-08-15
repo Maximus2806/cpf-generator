@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>CPF number for BLR deposits</title>
+  <title>CPF number for BRL deposits</title>
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -58,7 +58,7 @@
 </head>
 <body>
   <div class="card">
-    <h2>CPF number for BLR deposits</h2>
+    <h2>CPF number for BRL deposits</h2>
 
     <label for="cpfNumber">CPF Number:</label>
     <input type="text" id="cpfNumber" readonly>
@@ -72,13 +72,13 @@
   <script>
     // --- CPF GENERATOR (BR) ---
 
-// Форматирует 11 цифр в вид 000.000.000-00
+// Format 11 digits to the view 000.000.000-00
 function formatCPF(digits) {
   const s = digits.join("");
   return `${s.slice(0,3)}.${s.slice(3,6)}.${s.slice(6,9)}-${s.slice(9,11)}`;
 }
 
-// Проверка на «плохие» последовательности (все цифры одинаковые)
+// Check for «bad» sequences (all digits the same)
 function isBlacklistedCPF(digits) {
   return digits.every(d => d === digits[0]);
 }
@@ -117,7 +117,7 @@ function generateRandomCPF() {
   if (input) input.value = formatted;
 }
 
-// Copy
+// Copy function
 function copyCPF() {
       const cpfField = document.getElementById("cpfNumber");
       if (!cpfField.value) return;
