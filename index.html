@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>CPF number for BLR deposits</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f5f5f5;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+    }
+    .card {
+      background: white;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+      max-width: 400px;
+      width: 100%;
+    }
+    .card h2 {
+      margin-top: 0;
+      font-size: 20px;
+      text-align: center;
+    }
+    label {
+      display: block;
+      margin: 10px 0 5px;
+    }
+    input {
+      width: 100%;
+      padding: 8px;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+      margin-bottom: 15px;
+      box-sizing: border-box;
+    }
+    .btn-row {
+      display: flex;
+      gap: 10px;
+    }
+    button {
+      padding: 10px;
+      background: #007bff;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      flex: 1;
+    }
+    button:hover {
+      background: #0056b3;
+    }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h2>CPF number for BLR deposits</h2>
+
+    <label for="cpfNumber">CPF Number:</label>
+    <input type="text" id="cpfNumber" readonly>
+
+    <div class="btn-row">
+      <button type="button" onclick="generateRandomCPF()">Generate Random CPF</button>
+      <button type="button" onclick="copyCPF()">Copy</button>
+    </div>
+  </div>
+
+  <script>
+    // --- CPF GENERATOR (BR) ---
+
+// Форматирует 11 цифр в вид 000.000.000-00
+function formatCPF(digits) {
+  const s = digits.join("");
+  return `${s.slice(0,3)}.${s.slice(3,6)}.${s.slice(6,9)}-${s.slice(9,11)}`;
+}
+
+// Проверка на «плохие» последовательности (все цифры одинаковые)
+function isBlacklistedCPF(digits) {
+  return digits.every(d => d === digits[0]);
+}
+
+// Calculation of the check digit using the CPF algorithm
+// digits: array of numbers; weightsStart: 10 for the first CD, 11 for the second
+function calcCheckDigit(digits, weightsStart) {
+  let sum = 0;
+  for (let i = 0; i < digits.length; i++) {
+    sum += digits[i] * (weightsStart - i);
+  }
+  const mod = sum % 11;
+  return mod < 2 ? 0 : 11 - mod;
+}
+
+// Random valid CPF generating
+function generateRandomCPF() {
+  // 9 random digits
+  let base = Array.from({ length: 9 }, () => Math.floor(Math.random() * 10));
+
+  // Avoiding «000000000», «111111111» и т.п.
+  while (isBlacklistedCPF(base)) {
+    base = Array.from({ length: 9 }, () => Math.floor(Math.random() * 10));
+  }
+
+  // First control digit
+  const d10 = calcCheckDigit(base, 10);
+
+  // Second control digit (with d10)
+  const d11 = calcCheckDigit([...base, d10], 11);
+
+  const cpfDigits = [...base, d10, d11];
+  const formatted = formatCPF(cpfDigits);
+
+  const input = document.getElementById("cpfNumber");
+  if (input) input.value = formatted;
+}
+
+// Copy
+function copyCPF() {
+      const cpfField = document.getElementById("cpfNumber");
+      if (!cpfField.value) return;
+      navigator.clipboard.writeText(cpfField.value).then(() => {
+        alert("Copied:", cpfField.value);
+      });
+    }
+
+  </script>
+</body>
+</html>
